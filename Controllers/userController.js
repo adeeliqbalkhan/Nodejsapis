@@ -1,11 +1,8 @@
 
 const bcrypt = require("bcrypt");
 const User = require('../model/userModel');
-const { CURSOR_FLAGS } = require('mongodb');
 const jwt = require("jsonwebtoken");
-//@Desc Regiser a user
-//@route POST /api/users/register
-//@ access public
+
 
 const registerUser = async (req, res) => {
     try {
@@ -57,10 +54,6 @@ const registerUser = async (req, res) => {
     }
 };
 
-//@Desc login a user
-//@route POST /api/users/login 
-//@ access public
-
 const loginUser = async (req, res) => {
     // console.log(req.body)
     const { email, password, bio } = req.body;
@@ -79,7 +72,6 @@ const loginUser = async (req, res) => {
                     user: {
                         email: user.email,
                         id: user.id,
-                        bio: user.bio,
                     },
                 },
                 process.env.ACCESS_TOKEN_SECRET
@@ -144,10 +136,10 @@ const getUser = async (req, res) => {
         if (!userId) {
             res.status(400).json({ message: "userId is mendatory to get Info!" });
         }
-        const user = await User.findOne({ _id: userId });
+        const user = await User.findOne({ _id: userId }).select('-password')
         if (user) {
-            const dataToGive = { username: user.username, bio: user.bio, email: user.email };
-            res.status(200).json({ data: dataToGive, message: "Data Found Successfully" })
+            // const dataToGive = { username: user.username, bio: user.bio, email: user.email };
+            res.status(200).json({ data: user, message: "Data Found Successfully" });
 
         }
         else {
@@ -166,10 +158,10 @@ const RemoveUser = async (req, res) => {
         if (!userId) {
             res.status(400).json({ message: "userId is mendatory to Delete Info!" });
         };
-        const user = await User.deleteOne({ _id: userId });
+        const user = await User.deleteOne({ _id: userId }).select('password');
         if (user) {
-            const removeData = { bio: user.bio, email: user.email };
-            res.status(200).json({ message: "Data Deleted Successfully" })
+            // const removeData = { bio: user.bio, email: user.email };
+            res.status(200).json({ data: user, message: "Data Deleted Successfully" })
 
         }
 
@@ -180,23 +172,10 @@ const RemoveUser = async (req, res) => {
 
 
 
-
-
-
-//@Desc Current infor of user
-//@route POST /api/users/current 
-//@ access private
-
-// const currentUser = asyncHandler(async (req, res) => {
-//     res.json({ message: "Current user's information" })
-// });
-
-
 module.exports = {
     registerUser,
     loginUser,
     updateUser,
     getUser,
     RemoveUser,
-    // currentUser
 };
