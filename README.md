@@ -1,2 +1,2 @@
 # Nodejsapis
-I have done CRUD operations and facilitates with complete validations.
+I have done CRUD operations for user with complete validations.
