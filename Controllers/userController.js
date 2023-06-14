@@ -30,7 +30,6 @@ const registerUser = async (req, res) => {
         console.log("User created:", user);
 
         if (user) {
-            // Check if the entered password is correct
 
             res.status(200).json({ data: user, message: "User register successfully" });
 
@@ -97,7 +96,6 @@ const updateUser = async (req, res) => {
             };
             // Update the user
             const updatedUser = await User.findOneAndUpdate({ _id: userId }, update, { new: true },).select('-password');
-
             res.status(200).json({ data: updatedUser, message: "Username updated successfully" });
         }
     } catch (error) {
@@ -114,9 +112,7 @@ const getUser = async (req, res) => {
         }
         const user = await User.findOne({ _id: userId }).select('-password')
         if (user) {
-            // const dataToGive = { username: user.username, bio: user.bio, email: user.email };
             res.status(200).json({ data: user, message: "Data Found Successfully" });
-
         }
         else {
             res.status(404).json({ message: "User not found!" })
@@ -127,18 +123,15 @@ const getUser = async (req, res) => {
 
 };
 
-const RemoveUser = async (req, res) => {
+const removeUser = async (req, res) => {
     try {
         const { userId, } = req.body;
         if (!userId) {
             res.status(400).json({ message: "userId is mendatory to Delete Info!" });
         };
-        const user = await User.deleteOne({ _id: userId }).select('password');
-        if (user) {
-            // const removeData = { bio: user.bio, email: user.email };
-            res.status(200).json({ data: user, message: "Data Deleted Successfully" })
+        await User.deleteOne({ _id: userId }).select('password');
+        res.status(200).json({ message: "Data Deleted Successfully" })
 
-        }
 
     } catch (error) {
         console.log(error, "Caught an Error")
@@ -152,5 +145,5 @@ module.exports = {
     loginUser,
     updateUser,
     getUser,
-    RemoveUser,
+    removeUser,
 };
