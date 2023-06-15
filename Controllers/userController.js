@@ -16,7 +16,6 @@ const registerUser = async (req, res) => {
         if (userAvailable) {
             res.status(400).json({ message: "User already registered!" });
         }
-
         // Hash Password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -25,14 +24,15 @@ const registerUser = async (req, res) => {
             bio,
             email,
             password: hashedPassword,
+
         });
 
         console.log("User created:", user);
 
         if (user) {
+            const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
 
-            res.status(200).json({ data: user, message: "User register successfully" });
-
+            return res.status(200).json({ data: user, token, message: "User registered successfully" });
         }
         else {
             res.status(400).json({ message: "User data is not valid" });
@@ -60,7 +60,8 @@ const loginUser = async (req, res) => {
                         id: user.id,
                     },
                 },
-                process.env.ACCESS_TOKEN_SECRET
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: "1h" }
             );
 
             res.status(200).json({ data: user, token: accessToken, message: "Login successfully" });
@@ -137,15 +138,7 @@ const removeUser = async (req, res) => {
     }
 };
 
-const currentUser = async (req, res) => {
-    try {
 
-        res.status(200).json({ message: "All ok!" })
-
-    } catch (error) {
-        console.log(error, "Caught an Error")
-    }
-};
 
 
 
@@ -154,6 +147,5 @@ module.exports = {
     loginUser,
     updateUser,
     getUser,
-    removeUser,
-    currentUser,
+    removeUser
 };
