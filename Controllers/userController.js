@@ -136,7 +136,17 @@ const removeUser = async (req, res) => {
     } catch (error) {
         console.log(error, "Caught an Error")
     }
-}
+};
+
+const currentUser = async (req, res) => {
+    try {
+
+        res.status(200).json({ message: "All ok!" })
+
+    } catch (error) {
+        console.log(error, "Caught an Error")
+    }
+};
 
 
 
@@ -146,4 +156,5 @@ module.exports = {
     updateUser,
     getUser,
     removeUser,
+    currentUser,
 };
