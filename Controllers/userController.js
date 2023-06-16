@@ -43,12 +43,12 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-    const { email, password, bio } = req.body;
+    const { email, password } = req.body;
 
-    if (!email || !password || !bio) {
+    if (!email || !password) {
         res.status(400).json({ message: "Email/Password are mandatory!" });
     }
-    const user = await User.findOne({ email: email, bio: bio });
+    const user = await User.findOne({ email });
     if (user) {
         // Compare password with hashed password
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -105,22 +105,18 @@ const updateUser = async (req, res) => {
 
 const getUser = async (req, res) => {
     try {
-        const { userId = null, } = req.body;
+        const { userId, } = req.body;
 
-        if (!userId) {
-            res.status(400).json({ message: "userId is mendatory to get Info!" });
-        }
-        const user = await User.findOne({ _id: userId }).select('-password')
+        const user = await User.findOne({ _id: req.user.id }).select("-password");
+
         if (user) {
-            res.status(200).json({ data: user, message: "Data Found Successfully" });
-        }
-        else {
-            res.status(404).json({ message: "User not found!" })
+            return res.status(200).json({ data: user, message: "Data found successfully" });
+        } else {
+            return res.status(404).json({ message: "User not found!" });
         }
     } catch (error) {
-        console.log(error, "Caught an Error")
+        console.log(error, "Caught an error");
     }
-
 };
 
 const removeUser = async (req, res) => {
