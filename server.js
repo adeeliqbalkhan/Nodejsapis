@@ -11,7 +11,7 @@ app.use(express.json());
 //Routes
 app.use('/api/contact', require("./Routes/contactRoutes"));
 app.use('/api/users', require("./Routes/userRoutes"));
-app.use('/api/upload', require("./Routes/Uploadroutes"));
+app.use('/api/upload', require("./Routes/uploadRoutes"));
 app.use(errorHandler);
 
 const PORT = process.env.PORT
