@@ -1,15 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const AWS = require('aws-sdk');
 
-// Configure AWS SDK
-AWS.config.update({
-    accessKeyId: 'YOUR_ACCESS_KEY_ID',
-    secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
-    region: 'YOUR_S3_REGION'
-});
-
-const s3 = new AWS.S3();
 
 
 // Define storage configuration
