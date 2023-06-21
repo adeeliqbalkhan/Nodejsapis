@@ -11,15 +11,14 @@ const s3Client = new S3Client({
     }
 });
 
-const s3 = new S3Client({});
-
-
 function uploadToS3(file) {
     const params = {
         Bucket: 'YOUR_S3_BUCKET_NAME',
         Key: file.originalname + "-" + Date.now() + ".jpg",
         Body: file.buffer
     };
+    const command = new PutObjectCommand(params);
+    s3Client.send(command);
 }
 
 // Use the Multer middleware for file upload
