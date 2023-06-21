@@ -8,8 +8,7 @@ const multer = require('multer');
 const uploadImage = (req, res) => {
     console.log(req.file)
     res.json({
-        success: 1,
-        profile_url: 'http://6000/upload/${req.file.filename}'
+        message: "File uploaded successfully!"
 
     })
 };
