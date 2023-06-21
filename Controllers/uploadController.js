@@ -20,12 +20,6 @@ function uploadToS3(file) {
         Key: file.originalname + "-" + Date.now() + ".jpg",
         Body: file.buffer
     };
-
-    return new Promise((resolve, reject) => {
-        s3Client.send(new PutObjectCommand(params))
-            .then(data => resolve(data))
-            .catch(err => reject(err));
-    });
 }
 
 // Use the Multer middleware for file upload
