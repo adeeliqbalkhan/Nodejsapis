@@ -1,9 +1,10 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const { uploadImage } = require('../controllers/uploadController');
-const { upload } = require('../middleware/uploadMiddleware')
+const uploadMiddleware = require('../middleware/uploadMiddleware');
+const uploadController = require('../controller/uploadController');
 
-router.post('/image', upload, uploadImage);
+// Define the route for file upload
+router.post('/upload', uploadMiddleware, uploadController);
 
-module.exports = router
+module.exports = router;
