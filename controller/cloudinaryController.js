@@ -12,11 +12,7 @@ cloudinary.config({
 
 const uploadFile = async (req, res) => {
   uploader.single('file')(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      // Multer error occurred
-      console.error(err);
-      return res.status(500).json({ error: "Failed to upload file" });
-    } else if (err) {
+    if (err) {
       // Other error occurred
       console.error(err);
       return res.status(500).json({ error: "Failed to upload file" });
