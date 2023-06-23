@@ -47,8 +47,9 @@ cloudinary.config({
 });
 
 const uploadFile = async (req, res) => {
-    uploader.single('file')(req, res, async (err) => {
+    uploader.single('file')(req, res, (err) => {
         if (err) {
+            // Other error occurred
             console.log(err);
             return res.status(500).json({ error: "Failed to upload file" });
         }
@@ -58,35 +59,19 @@ const uploadFile = async (req, res) => {
 
         const filePath = req.file.path;
 
-        cloudinary.uploader.upload(filePath, async (error, result) => {
+        cloudinary.uploader.upload(filePath, (error, result) => {
             if (error) {
                 console.log(error);
                 return res.status(500).json({ error: "Failed to upload file" });
             }
 
             // File uploaded successfully
-            const imageUrl = result.secure_url;
-
-            // Update the user's profilePic field with the imageUrl in the database
-            const userId = req.params.userId;
-            try {
-                const user = await User.findOne({ _id: userId });
-                if (!user) {
-                    return res.status(404).json({ error: "User not found" });
-                }
-
-                user.profilePic = imageUrl;
-                await user.save();
-
-                res.json({ message: 'File uploaded successfully!', file: imageUrl });
-            } catch (err) {
-                console.log("Error:", err);
-                return res.status(500).json({ error: "Failed to save image URL" });
-            }
+            res.json({ message: 'file uploaded successfully!', file: result.secure_url });
         });
     });
 };
 
-
-
 module.exports = uploadFile;
+
+
+

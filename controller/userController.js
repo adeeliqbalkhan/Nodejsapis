@@ -2,6 +2,7 @@
 const bcrypt = require("bcrypt");
 const User = require('../model/userModel');
 const jwt = require("jsonwebtoken");
+const upload = require('../controller/uploadController')
 
 
 const registerUser = async (req, res) => {
@@ -78,14 +79,14 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const { userId, username } = req.body;
+        const { userId, username, fileUrl } = req.body;
 
         if (!userId || !username) {
             res.status(400).json({ message: "Username and userId is mendatory!" });
         };
-        if (req.user.id !== userId) {
-            return res.status(404).json({ message: "Access denied, Invalid User" })
-        }
+        // if (req.user.id !== userId) {
+        //     return res.status(404).json({ message: "Access denied, Invalid User" });
+        // }
         // Find the user by IDs
         const user = await User.findOne({ _id: userId })
         if (user && user.username == username) {
@@ -96,9 +97,11 @@ const updateUser = async (req, res) => {
             // Update the username
             const update = {
                 $set: {
-                    username: username
+                    username: username,
+                    profilePic: fileUrl,
                 }
             };
+
             // Update the user
             const updatedUser = await User.findOneAndUpdate({ _id: userId }, update, { new: true },).select('-password -token');
             res.status(200).json({ data: updatedUser, message: "Username updated successfully" });
