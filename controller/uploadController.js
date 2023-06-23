@@ -35,10 +35,10 @@
 //     }
 // };
 
-const express = require("express");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-
+const uploader = multer({ dest: "uploads/" });
+const User = require('../model/userModel');
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -47,29 +47,46 @@ cloudinary.config({
 });
 
 const uploadFile = async (req, res) => {
-    uploader.single('file')(req, res, (err) => {
+    uploader.single('file')(req, res, async (err) => {
         if (err) {
-            // Other error occurred
-            console.error(err);
+            console.log(err);
             return res.status(500).json({ error: "Failed to upload file" });
         }
-
         if (!req.file) {
             return res.status(400).json({ error: "No file uploaded" });
         }
 
         const filePath = req.file.path;
 
-        cloudinary.uploader.upload(filePath, (error, result) => {
+        cloudinary.uploader.upload(filePath, async (error, result) => {
             if (error) {
-                console.error(error);
+                console.log(error);
                 return res.status(500).json({ error: "Failed to upload file" });
             }
 
             // File uploaded successfully
-            res.json({ success: true, file: result.secure_url });
+            const imageUrl = result.secure_url;
+
+            // Update the user's profilePic field with the imageUrl in the database
+            const userId = req.params.userId;
+            try {
+                const user = await User.findOne({ _id: userId });
+                if (!user) {
+                    return res.status(404).json({ error: "User not found" });
+                }
+
+                user.profilePic = imageUrl;
+                await user.save();
+
+                res.json({ message: 'File uploaded successfully!', file: imageUrl });
+            } catch (err) {
+                console.log("Error:", err);
+                return res.status(500).json({ error: "Failed to save image URL" });
+            }
         });
     });
 };
+
+
 
 module.exports = uploadFile;
