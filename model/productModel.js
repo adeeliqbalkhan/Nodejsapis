@@ -15,7 +15,7 @@ const productSchema = mongoose.Schema({
     },
     picture: {
         type: String,
-        required: true,
+        default: null,
     },
     quantity: {
         type: String,
@@ -26,4 +26,4 @@ const productSchema = mongoose.Schema({
         timestamps: true,
     })
 
-module.exports = mongoose.model("Product", contactSchema)
+module.exports = mongoose.model("Product", productSchema)

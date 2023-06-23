@@ -12,6 +12,7 @@ app.use(express.json());
 //Routes
 app.use('/api/users', require("./routes/userRoutes"));
 app.use('/api/upload', require('./routes/uploadRoutes'))
+app.use('/api/product', require('./routes/productRoute'))
 app.use(errorHandler);
 
 
